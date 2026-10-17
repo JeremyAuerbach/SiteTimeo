@@ -14,7 +14,8 @@ Docker Compose, pytest, Ruff. Ne pas introduire d'autre brique sans en parler à
 - **Schéma de base = migrations Alembic** dans `backend/alembic/versions/`, relues et commitées
   (skill `migration-alembic`). Jamais de modification manuelle de la base, jamais de
   `Base.metadata.create_all` hors des tests.
-- Avant de commiter : skill `verifier` (tests, Ruff, typecheck, build).
+- Avant de commiter : skill `verifier` (tests, Ruff, typecheck, build, test de fumée Docker).
+  La CI (`.github/workflows/ci.yml`) refait ces vérifications sur chaque pull request.
 - Ne jamais commiter `.env` ni de secret.
 
 ## Repères

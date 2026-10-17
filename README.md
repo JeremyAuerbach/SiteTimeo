@@ -75,13 +75,22 @@ npm run dev
 
 ```bash
 cd backend
-pytest          # tests (SQLite en mémoire ; TEST_DATABASE_URL=... pour viser PostgreSQL)
+pytest          # tests (SQLite en mémoire)
+TEST_DATABASE_URL=postgresql+psycopg://timeo:timeo@localhost:5432/timeo_test pytest
+                # mêmes tests sur PostgreSQL, plus le test des migrations Alembic
 ruff check .    # lint
 ruff format .   # mise en forme
 
 cd frontend
 npm run typecheck
+
+# Test de fumée : construit et lance toute l'app dans Docker (projet à part, port 8089),
+# vérifie connexion, visiteur, photo, migrations, redémarrage sans backend, et persistance.
+./scripts/smoke-test.sh
 ```
+
+La CI GitHub Actions (`.github/workflows/ci.yml`) lance tout cela sur chaque pull request et
+chaque push sur `main`.
 
 ## Règles de travail
 

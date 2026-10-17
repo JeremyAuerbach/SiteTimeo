@@ -23,11 +23,20 @@ npm run build # inclut le typecheck (tsc -b)
 cd ..
 ```
 
-Pour un changement de bout en bout (auth, base, nginx), vérifier aussi la stack complète :
+Pour un changement de bout en bout (auth, base, nginx, Docker), lancer aussi le test de fumée :
 
 ```bash
-docker compose up -d --build
-curl -sf http://localhost:8080/api/health
+./scripts/smoke-test.sh
+```
+
+Il construit et démarre toute l'app dans un projet Docker à part (port 8089, l'instance
+habituelle n'est pas touchée), vérifie les parcours essentiels et nettoie à la fin. Tout nouveau
+parcours important ou toute panne rencontrée sous Docker doit y gagner une vérification.
+
+Sur PostgreSQL (migrations comprises) :
+
+```bash
+TEST_DATABASE_URL=postgresql+psycopg://timeo:timeo@localhost:5432/timeo_test pytest -q
 ```
 
 Corriger tout échec avant de commiter. Si une vérification ne peut pas tourner (outil absent,
