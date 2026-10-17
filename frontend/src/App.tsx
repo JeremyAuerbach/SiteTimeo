@@ -36,5 +36,5 @@ export default function App() {
   }
 
   if (loading) return <main className="screen" aria-busy="true" />;
-  return user ? <HomePage user={user} onLogout={logout} /> : <LoginPage onLogin={setUser} />;
+  return user ? <HomePage user={user} onUserChange={setUser} onLogout={logout} /> : <LoginPage onLogin={setUser} />;
 }

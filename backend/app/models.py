@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, String, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, LargeBinary, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -23,6 +23,16 @@ class User(Base):
     sessions: Mapped[list["AuthSession"]] = relationship(
         back_populates="user", cascade="all, delete-orphan", passive_deletes=True
     )
+    avatar: Mapped["UserAvatar | None"] = relationship(
+        back_populates="user", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+    @property
+    def avatar_url(self) -> str | None:
+        if self.avatar is None:
+            return None
+        # Le paramètre change à chaque nouvelle photo : le navigateur ne garde pas l'ancienne.
+        return f"/api/users/{self.id}/avatar?v={int(self.avatar.updated_at.timestamp())}"
 
 
 # Pseudos uniques sans tenir compte de la casse : « Timeo » et « timeo » sont le même pseudo.
@@ -40,3 +50,17 @@ class AuthSession(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
 
     user: Mapped[User] = relationship(back_populates="sessions")
+
+
+class UserAvatar(Base):
+    __tablename__ = "user_avatars"
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    content_type: Mapped[str] = mapped_column(String(32))
+    # Chargé seulement à la demande : lire un utilisateur ne doit pas lire son image.
+    data: Mapped[bytes] = mapped_column(LargeBinary, deferred=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    user: Mapped[User] = relationship(back_populates="avatar")

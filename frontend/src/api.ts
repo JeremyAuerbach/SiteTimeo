@@ -3,6 +3,7 @@ export type User = {
   username: string;
   is_guest: boolean;
   created_at: string;
+  avatar_url: string | null;
 };
 
 export class ApiError extends Error {
@@ -43,12 +44,17 @@ function validationMessage(error: { loc?: string[]; type?: string }): string {
   if (field === "username") {
     return "Le pseudo doit faire de 3 à 32 caractères : lettres, chiffres, « _ », « - » ou « . ».";
   }
-  if (field === "password") return "Le mot de passe doit faire au moins 8 caractères.";
+  if (field === "password" || field === "new_password") return "Le mot de passe doit faire au moins 8 caractères.";
   return "Les informations saisies sont invalides.";
 }
 
-const post = <T>(path: string, body?: unknown) =>
-  request<T>(path, { method: "POST", body: body === undefined ? undefined : JSON.stringify(body) });
+const send =
+  (method: string) =>
+  <T>(path: string, body?: unknown) =>
+    request<T>(path, { method, body: body === undefined ? undefined : JSON.stringify(body) });
+const post = send("POST");
+const put = send("PUT");
+const patch = send("PATCH");
 
 export const api = {
   me: () => request<User>("/auth/me"),
@@ -57,4 +63,15 @@ export const api = {
     post<User>("/auth/register", { username, password }),
   guest: (username: string) => post<User>("/auth/guest", { username }),
   logout: () => post<void>("/auth/logout"),
+
+  updateUsername: (username: string) => patch<User>("/account", { username }),
+  updatePassword: (current_password: string, new_password: string) =>
+    put<void>("/account/password", { current_password, new_password }),
+  uploadAvatar: (image: Blob) =>
+    request<User>("/account/avatar", {
+      method: "PUT",
+      headers: { "Content-Type": image.type },
+      body: image,
+    }),
+  deleteAvatar: () => request<User>("/account/avatar", { method: "DELETE" }),
 };

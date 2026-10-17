@@ -25,10 +25,12 @@ backend/            API FastAPI (Python 3.13)
     models.py       Tables SQLAlchemy
     schemas.py      Schémas Pydantic (entrées / sorties de l'API)
     auth.py         Sessions : création, lecture du cookie, expiration
-    routers/        Routes de l'API
+    routers/        Routes de l'API (auth.py : connexion, account.py : compte et photo)
   alembic/          Migrations du schéma de base
   tests/            Tests pytest
 frontend/           Écrans React + TypeScript (Vite), servis par nginx
+  src/pages/        Connexion, accueil (menu à gauche) et ses onglets Quizz et Compte
+  src/quiz/         Quizz d'exemple, en attendant le backend des quizz
 docker-compose.yml  PostgreSQL 16 + backend + frontend
 ```
 
@@ -41,6 +43,10 @@ docker-compose.yml  PostgreSQL 16 + backend + frontend
   - sinon, quand il ferme l'application : la page signale sa présence chaque minute, et après
     10 minutes sans signe de vie le serveur supprime le compte (le pseudo redevient libre).
     Le cookie du visiteur est en plus un cookie de session, effacé à la fermeture du navigateur.
+
+Depuis l'onglet **Compte**, on peut ajouter une photo de profil (recadrée au carré et réduite à
+256 px avant l'envoi, 2 Mo maximum, stockée en base), changer de pseudo et, pour un compte
+classique, changer de mot de passe (les autres appareils connectés sont alors déconnectés).
 
 La session est un jeton aléatoire dans un cookie `HttpOnly` ; la base n'en garde que l'empreinte
 SHA-256. Les mots de passe sont hachés avec Argon2.
