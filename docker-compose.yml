@@ -23,13 +23,27 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      # Sans proxy : un proxy configuré dans Docker ne doit pas intercepter cet appel local.
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request as u; u.build_opener(u.ProxyHandler({})).open('http://localhost:8000/api/health')"
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
 
   frontend:
     build: ./frontend
     ports:
       - "${APP_PORT:-8080}:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   db-data:
