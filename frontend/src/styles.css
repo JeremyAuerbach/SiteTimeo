@@ -245,9 +245,34 @@ button.secondary:hover {
 .sidebar-user {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
+}
+
+/* Le profil en bas du menu ouvre la page Compte. */
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sidebar-profile:hover {
+  background: var(--bg);
+}
+
+.sidebar-profile.active {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.sidebar-profile.active .sidebar-username {
+  color: var(--accent);
 }
 
 .sidebar-user-text {
@@ -496,9 +521,15 @@ button.secondary:disabled {
   }
 
   .sidebar-user {
-    margin-left: auto;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-end;
     padding-top: 0;
     border-top: none;
+  }
+
+  .sidebar-profile {
+    flex: 0 1 auto;
   }
 
   .sidebar-role {

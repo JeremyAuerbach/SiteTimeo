@@ -2,21 +2,19 @@ import { useEffect, useState } from "react";
 
 import type { User } from "../api";
 import Avatar from "../components/Avatar";
-import { AccountIcon, LogoutIcon, QuizIcon } from "../components/Icons";
+import { LogoutIcon, QuizIcon } from "../components/Icons";
 import AccountTab from "./AccountTab";
 import QuizTab from "./QuizTab";
 
-const TABS = [
-  { id: "quizz", label: "Quizz", Icon: QuizIcon },
-  { id: "compte", label: "Compte", Icon: AccountIcon },
-] as const;
+const TABS = [{ id: "quizz", label: "Quizz", Icon: QuizIcon }] as const;
 
-type TabId = (typeof TABS)[number]["id"];
+// La page Compte n'est pas un onglet : on l'ouvre depuis le profil en bas du menu.
+type View = (typeof TABS)[number]["id"] | "compte";
 
-// L'onglet ouvert est gardé dans l'adresse (#quizz, #compte) : il survit au rechargement.
-function tabFromHash(): TabId {
+// La vue ouverte est gardée dans l'adresse (#quizz, #compte) : elle survit au rechargement.
+function viewFromHash(): View {
   const hash = window.location.hash.slice(1);
-  return TABS.some((tab) => tab.id === hash) ? (hash as TabId) : "quizz";
+  return hash === "compte" || TABS.some((tab) => tab.id === hash) ? (hash as View) : "quizz";
 }
 
 type Props = {
@@ -26,10 +24,10 @@ type Props = {
 };
 
 export default function HomePage({ user, onUserChange, onLogout }: Props) {
-  const [tab, setTab] = useState<TabId>(tabFromHash);
+  const [view, setView] = useState<View>(viewFromHash);
 
   useEffect(() => {
-    const onHashChange = () => setTab(tabFromHash());
+    const onHashChange = () => setView(viewFromHash());
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
@@ -44,8 +42,8 @@ export default function HomePage({ user, onUserChange, onLogout }: Props) {
             <a
               key={id}
               href={`#${id}`}
-              className={tab === id ? "nav-item active" : "nav-item"}
-              aria-current={tab === id ? "page" : undefined}
+              className={view === id ? "nav-item active" : "nav-item"}
+              aria-current={view === id ? "page" : undefined}
             >
               <Icon />
               <span>{label}</span>
@@ -54,11 +52,18 @@ export default function HomePage({ user, onUserChange, onLogout }: Props) {
         </nav>
 
         <div className="sidebar-user">
-          <Avatar user={user} size={36} />
-          <div className="sidebar-user-text">
-            <span className="sidebar-username">{user.username}</span>
-            <span className="sidebar-role">{user.is_guest ? "Visiteur" : "Compte"}</span>
-          </div>
+          <a
+            href="#compte"
+            className={view === "compte" ? "sidebar-profile active" : "sidebar-profile"}
+            aria-current={view === "compte" ? "page" : undefined}
+            title="Mon compte"
+          >
+            <Avatar user={user} size={36} />
+            <span className="sidebar-user-text">
+              <span className="sidebar-username">{user.username}</span>
+              <span className="sidebar-role">{user.is_guest ? "Visiteur" : "Compte"}</span>
+            </span>
+          </a>
           <button
             type="button"
             className="icon-button"
@@ -72,7 +77,7 @@ export default function HomePage({ user, onUserChange, onLogout }: Props) {
       </aside>
 
       <main className="content">
-        {tab === "quizz" ? (
+        {view === "quizz" ? (
           <QuizTab user={user} />
         ) : (
           <AccountTab user={user} onUserChange={onUserChange} />

@@ -29,7 +29,8 @@ backend/            API FastAPI (Python 3.13)
   alembic/          Migrations du schéma de base
   tests/            Tests pytest
 frontend/           Écrans React + TypeScript (Vite), servis par nginx
-  src/pages/        Connexion, accueil (menu à gauche) et ses onglets Quizz et Compte
+  src/pages/        Connexion, accueil (menu à gauche) : onglet Quizz, et page Compte
+                    ouverte en cliquant sur son profil en bas du menu
   src/quiz/         Quizz d'exemple, en attendant le backend des quizz
 docker-compose.yml  PostgreSQL 16 + backend + frontend
 ```
