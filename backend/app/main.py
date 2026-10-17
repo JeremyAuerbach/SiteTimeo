@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from app.auth import purge_expired
 from app.config import get_settings
 from app.db import SessionLocal
-from app.routers import auth
+from app.routers import account, auth
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ app = FastAPI(
     title="SiteTimeo", lifespan=lifespan, docs_url="/api/docs", openapi_url="/api/openapi.json"
 )
 app.include_router(auth.router)
+app.include_router(account.router)
 
 
 @app.get("/api/health", tags=["system"])

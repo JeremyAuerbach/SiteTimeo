@@ -6,6 +6,8 @@
   --border: #dcdfe4;
   --accent: #3b5bdb;
   --accent-hover: #364fc7;
+  --accent-soft: #e7ecfb;
+  --on-accent: #ffffff;
   --error: #c92a2a;
   --success: #2b8a3e;
   color-scheme: light dark;
@@ -21,6 +23,8 @@
     --border: #3a3d43;
     --accent: #748ffc;
     --accent-hover: #91a7ff;
+    --accent-soft: #262c40;
+    --on-accent: #10142a;
     --error: #ff8787;
     --success: #69db7c;
   }
@@ -132,7 +136,7 @@ button.secondary {
 
 button.primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border: none;
   font-weight: 600;
 }
@@ -181,4 +185,371 @@ button.secondary:hover {
   content: "";
   flex: 1;
   border-top: 1px solid var(--border);
+}
+
+/* ---------- Page d'accueil : menu à gauche + contenu ---------- */
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 16px;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+}
+
+.sidebar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0 8px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* Le profil en bas du menu ouvre la page Compte. */
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sidebar-profile:hover {
+  background: var(--bg);
+}
+
+.sidebar-profile.active {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.sidebar-profile.active .sidebar-username {
+  color: var(--accent);
+}
+
+.sidebar-user-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.sidebar-username {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-role {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.avatar {
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-initial {
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.content {
+  padding: 32px;
+  min-width: 0;
+}
+
+.tab-page {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tab-header h1 {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel h2 {
+  font-size: 1.05rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+select {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+button.secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hint.small {
+  font-size: 0.85rem;
+}
+
+.preview-note {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  font-size: 0.9rem;
+}
+
+/* ---------- Quizz ---------- */
+
+.quiz-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quiz-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.quiz-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.quiz-main h2 {
+  font-size: 1.1rem;
+}
+
+.quiz-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.quiz-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+
+.quiz-players {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+  border: 1px solid currentColor;
+}
+
+.status-en-cours {
+  color: var(--success);
+}
+
+.status-bientot {
+  color: var(--accent);
+}
+
+.status-preparation {
+  color: var(--muted);
+}
+
+/* ---------- Compte ---------- */
+
+.avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.avatar-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Petits écrans : le menu passe en haut ---------- */
+
+@media (max-width: 720px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .nav-item {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .sidebar-user {
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-end;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .sidebar-profile {
+    flex: 0 1 auto;
+  }
+
+  .sidebar-role {
+    display: none;
+  }
+
+  .content {
+    padding: 20px 16px;
+  }
+
+  .quiz-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quiz-side {
+    justify-content: space-between;
+  }
+
+  .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

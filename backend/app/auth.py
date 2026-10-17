@@ -29,6 +29,13 @@ def find_user_by_username(db: Session, username: str) -> User | None:
     return db.scalar(select(User).where(func.lower(User.username) == username.lower()))
 
 
+def ensure_username_free(db: Session, username: str, *, allowed: User | None = None) -> None:
+    """Refuse un pseudo déjà pris ; `allowed` peut garder le sien (ex. changer la casse)."""
+    owner = find_user_by_username(db, username)
+    if owner is not None and owner is not allowed:
+        raise HTTPException(status.HTTP_409_CONFLICT, "Ce pseudo est déjà pris")
+
+
 def create_session(db: Session, user: User) -> str:
     token = new_token()
     db.add(AuthSession(token_hash=hash_token(token), user=user, expires_at=_now() + _ttl(user)))

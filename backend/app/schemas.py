@@ -32,3 +32,13 @@ class UserOut(BaseModel):
     username: str
     is_guest: bool
     created_at: datetime
+    avatar_url: str | None
+
+
+class UsernameUpdate(BaseModel):
+    username: Username
+
+
+class PasswordUpdate(BaseModel):
+    current_password: str
+    new_password: Password

@@ -5,6 +5,7 @@ from app.auth import (
     COOKIE_NAME,
     create_session,
     end_session,
+    ensure_username_free,
     find_user_by_username,
     get_current_session,
     get_current_user,
@@ -32,14 +33,9 @@ def _set_cookie(response: Response, token: str, user: User) -> None:
     )
 
 
-def _ensure_username_free(db: Session, username: str) -> None:
-    if find_user_by_username(db, username) is not None:
-        raise HTTPException(status.HTTP_409_CONFLICT, "Ce pseudo est déjà pris")
-
-
 @router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 def register(body: Credentials, response: Response, db: Session = Depends(get_db)) -> User:
-    _ensure_username_free(db, body.username)
+    ensure_username_free(db, body.username)
     user = User(username=body.username, password_hash=hash_password(body.password))
     db.add(user)
     _set_cookie(response, create_session(db, user), user)
@@ -57,7 +53,7 @@ def login(body: LoginRequest, response: Response, db: Session = Depends(get_db))
 
 @router.post("/guest", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 def guest(body: GuestRequest, response: Response, db: Session = Depends(get_db)) -> User:
-    _ensure_username_free(db, body.username)
+    ensure_username_free(db, body.username)
     user = User(username=body.username, is_guest=True)
     db.add(user)
     _set_cookie(response, create_session(db, user), user)
